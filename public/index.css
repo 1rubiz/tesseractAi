@@ -1,0 +1,140 @@
+/* Common styles for all screen sizes */
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f6f6f6;
+    color: #333;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  
+  input[type="file"],
+  textarea,
+  input[type="text"],
+  button,
+  #response,
+  #summary,
+  #loader {
+    border-radius: 4px;
+    padding: 20px;
+    margin: 20px;
+    background-color: #fff;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+  }
+  
+  input[type="file"] {
+    cursor: pointer;
+  }
+  
+  button {
+    background-color: #1f56c3;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  /* Media queries for different screen sizes */
+  @media only screen and (max-width: 759px) {
+    /* Styles for mobile devices */
+    body {
+      padding: 0;
+    }
+  
+    input[type="file"],
+    textarea,
+    input[type="text"],
+    button,
+    #response,
+    #summary,
+    #loader {
+      padding: 10px;
+      margin: 10px;
+      font-size: 0.8rem;
+    }
+  
+    input[type="file"] {
+      padding: 10px;
+      margin: 10px;
+    }
+    textarea#output{
+        width: 90%;
+    }
+div#response {
+    width: 90%;
+}
+    button {
+      padding: 10px 20px;
+    }
+  
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  .output-container  {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+    div {
+      margin: 10px;
+    }
+.prompt{
+    display: flex;
+    flex-direction: row;
+
+}
+  }
+  
+  @media only screen and (min-width: 760px) and (max-width: 1024px) {
+    /* Styles for tablet devices */
+    input[type="file"],
+    textarea,
+    input[type="text"],
+    button,
+    #response,
+    #summary,
+    #loader {
+      padding: 15px;
+      margin: 15px;
+      font-size: 1rem;
+    }
+  
+    input[type="file"] {
+      padding: 15px;
+      margin: 15px;
+    }
+  
+    button {
+      padding: 15px 30px;
+    }
+  }
+  
+  @media only screen and (min-width: 1025px) {
+    /* Styles for laptop and desktop devices */
+    input[type="file"],
+    textarea,
+    input[type="text"],
+    button,
+    #response,
+    #summary,
+    #loader {
+      padding: 20px;
+      margin: 20px;
+      font-size: 1rem;
+    }
+  
+    input[type="file"] {
+      padding: 20px;
+      margin: 20px;
+    }
+  
+    button {
+      padding: 20px 40px;
+    }
+  }
+  
