@@ -57,7 +57,7 @@ function generateResponse(prompt, text) {
         //  const responseText = data.choices[0].text.trim();
         //  console.log(data.choices[0].text);
         if(data){
-         console.log(data);
+//          console.log(data);
         //  res.send(data)
         myData=data;
          return(data);
