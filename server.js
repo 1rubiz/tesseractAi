@@ -40,7 +40,7 @@ function generateResponse(prompt, text) {
         },
         body: JSON.stringify({
             prompt: `${prompt} ${text}`,
-            max_tokens: 60,
+            max_tokens: 150,
             temperature: 0.3,
             top_p: 0.3,
             n: 1,
