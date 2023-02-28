@@ -1,27 +1,62 @@
-
-        document.getElementById('file-input').addEventListener('change', async function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-          reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    document.getElementById('loader').style.display = "block";
-                    Tesseract.recognize(img, 'eng')
-                        .then(({ data: { text } }) => {
-                            console.log(text);
-                            document.getElementById('output').innerHTML = text; // display the final recognized text in the div element
-                            document.getElementById('loader').style.display = "none";
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                            document.getElementById('loader').style.display = "none";
-                        });
-                }
-                img.src = e.target.result;
+document.getElementById('file-input').addEventListener('change', async function(e) {
+    const files = e.target.files;
+    if (!files) return;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                document.getElementById('loader').style.display = "block";
+                Tesseract.recognize(img, 'eng')
+                    .then(({ data: { text } }) => {
+                        console.log(text);
+                        // append the recognized text to the output element for each image
+                        document.getElementById('output').innerHTML += `<p>Image ${i+1}:</p><p>${text}</p>`;
+                        // display the image in a new div element before the extracted text
+                        const imageContainer = document.getElementById('image-container');
+                        const imageElement = document.createElement('img');
+                        imageElement.src = img.src;
+                        imageElement.style.width = "100px";
+                        imageContainer.appendChild(imageElement);
+                        document.getElementById('loader').style.display = "none";
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        document.getElementById('loader').style.display = "none";
+                    });
             }
-            reader.readAsDataURL(file);
-        });
+            if (file.type.includes('pdf')) {
+                // handle PDF file
+                const loadingTask = pdfjsLib.getDocument(e.target.result);
+                loadingTask.promise.then(function(pdf) {
+                    const maxPages = pdf.numPages;
+                    for (let j = 1; j <= maxPages; j++) {
+                        pdf.getPage(j).then(function(page) {
+                            const scale = 1.5;
+                            const viewport = page.getViewport({ scale: scale });
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+                            const renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            page.render(renderContext).promise.then(function() {
+                                const imgSrc = canvas.toDataURL();
+                                img.src = imgSrc;
+                            });
+                        });
+                    }
+                });
+            } else {
+                reader.readAsDataURL(file);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+});
 
         document.getElementById('summarize-btn').addEventListener('click',async ()=>{
             const text = document.getElementById('output').value
