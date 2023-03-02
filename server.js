@@ -10,7 +10,10 @@ const dotenv = require('dotenv');
 const fetch = require('node-fetch')
 // import fetch from 'node-fetch';
 
+dotenv.config();
 
+const OPEN_API_KEY = process.env.OPENAI_API_KEY
+console.log(OPEN_API_KEY)
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -21,7 +24,7 @@ app.use(fileUpload());
 app.use(cors());
 app.use(morgan('dev'))
 
-dotenv.config();
+
 
 app.listen(7000, async ()=>{
     console.log("Listening.....")
@@ -36,7 +39,7 @@ function generateResponse(prompt, text) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer '+process.env.OPENAI_API_KEY2
+            'Authorization': 'Bearer '+process.env.OPENAI_API_KEY
         },
         body: JSON.stringify({
             prompt: `${prompt} ${text}`,
@@ -92,7 +95,6 @@ app.post('/aibot', async (req, res)=>{
     
     // res.sendStatus(200);
 })
-
 app.get('/getdata', async (req, res)=>{
     try{
         //  const data = await generateResponse(req.body.prompt, req.body.text);
@@ -101,42 +103,47 @@ app.get('/getdata', async (req, res)=>{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+process.env.OPENAI_API_KEY2
+                'Authorization': `Bearer ${OPEN_API_KEY}`
             },
             body: JSON.stringify({
                 prompt: `${myData.prompt} ${myData.text}`,
-                max_tokens: 60,
+                max_tokens: 500,
                 temperature: 0.3,
                 top_p: 0.3,
                 n: 1,
                 // frequency_penalty: 0.5,
                 // presence_penalty: 0,
-                model: 'text-davinci-002',
+                model: 'text-davinci-003',
             })
         };
-         // Make the API request
-         fetch(url, options)
-         .then(response => response.json())
-         .then(data => {
-             // Get the response text from the API response
-            //  const responseText = data.choices[0].text.trim();
-            //  console.log(data.choices[0].text);
-            if(data){
-             console.log(data);
-            // myData = data;
-             res.send(data);
-            //// myData=data;
-            //  return(data);
-            }
-            //  console.log(myData)
-             // Display the response in the UI
-         })
-         .catch(error => console.error(error));
-
-
-        //  res.send(myData).sendStatus(200);
-    }catch(err){
+        
+        // Make the API request
+        fetch(url, options)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.choices && data.choices.length > 0) {
+                    const responseText = data.choices[0].text.trim();
+                    const orderedListRegex = /^\d+\.\s+/gm;
+                    const hasOrderedList = orderedListRegex.test(responseText);
+                    
+                    if (hasOrderedList) {
+                        const orderedList = responseText.split('\n');
+                        const orderedListFormatted = orderedList.reduce((acc, item, index) => {
+                          if (item) {
+                            acc += ` ${item.replace(/\n/g, '')}<br>`;
+                          }
+                          return acc;
+                        }, '');
+                        data.choices[0].text = orderedListFormatted;
+                      }
+                      
+                    
+                    console.log(data);
+                    res.send(data);
+                }
+            })
+            .catch(error => console.error(error));
+    } catch(err){
         console.log(err)
     }
-    // res.send(myData)
-})
+});

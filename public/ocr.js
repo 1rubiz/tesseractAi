@@ -12,7 +12,7 @@ document.getElementById('file-input').addEventListener('change', async function(
                     .then(({ data: { text } }) => {
                         console.log(text);
                         // append the recognized text to the output element for each image
-                        document.getElementById('output').innerHTML += `<p>Image ${i+1}:</p><p>${text}</p>`;
+                        document.getElementById('output').innerHTML += ` ${i+1}:${text}</p>`;
                         // display the image in a new div element before the extracted text
                         const imageContainer = document.getElementById('image-container');
                         const imageElement = document.createElement('img');
