@@ -105,7 +105,7 @@ app.get('/getdata', async (req, res)=>{
             },
             body: JSON.stringify({
                 prompt: `${myData.prompt} ${myData.text}`,
-                max_tokens: 60,
+                max_tokens: 200,
                 temperature: 0.3,
                 top_p: 0.3,
                 n: 1,
