@@ -29,7 +29,8 @@ app.use(morgan('dev'))
 app.listen(7000, async ()=>{
     console.log("Listening.....")
 })
-
+const inText = "in this document"
+const restructure = "and restructure"
 let myData = {}
 function generateResponse(prompt, text) {
     // Set up the API endpoint URL and options
@@ -44,11 +45,11 @@ function generateResponse(prompt, text) {
         body: JSON.stringify({
             prompt: `${prompt} ${text}`,
             max_tokens: 150,
-            temperature: 0.3,
-            top_p: 0.3,
+            temperature: 0.5,
+            top_p: 0.7,
             n: 1,
             // frequency_penalty: 0.5,
-            // presence_penalty: 0,
+            // presence_penalty: 1,
             model: 'text-davinci-002',
         })
     };
@@ -106,14 +107,16 @@ app.get('/getdata', async (req, res)=>{
                 'Authorization': `Bearer ${OPEN_API_KEY}`
             },
             body: JSON.stringify({
-                prompt: `${myData.prompt} ${myData.text}`,
-                max_tokens: 500,
-                temperature: 0.3,
-                top_p: 0.3,
+                prompt: `${myData.prompt } ${inText} ${restructure} ${myData.text}`,
+                max_tokens: 1000,
+                temperature: 0.8,
+                // stop: [ "?", "!"],
                 n: 1,
-                // frequency_penalty: 0.5,
-                // presence_penalty: 0,
+                frequency_penalty: 0.2,
+                presence_penalty: 0.5,
                 model: 'text-davinci-003',
+                
+                best_of: 3,
             })
         };
         
