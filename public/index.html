@@ -7,10 +7,23 @@
     <title>OCR-AI</title>
     <base href="/">
     <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/jimp/browser/lib/jimp.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.2.2/dist/tesseract.min.js"></script> -->
     <script src='https://unpkg.com/tesseract.js@4.0.1/dist/tesseract.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
     <script src="https://kit.fontawesome.com/495342f380.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuOniNX8UDoRATqZSds/7t6zCQZfaCe3e5zcGaQwxa8Kpn5RTM9Fvl3X2lLV4grPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" integrity="sha512-cyzxRvewl+FOKTtpBzYjW6x6IAYUCZy3sGP40hn+DQkqeluGRCax7qztK2ImL64SA+C7kVWdLI6wvdlStawhyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- <script async src="https://docs.opencv.org/master/opencv.js" onload="onOpenCvReady();" type="text/javascript"></script> -->
+    <!-- <script async src="https://docs.opencv.org/master/opencv.js" onload="onOpenCvReady();" type="text/javascript"></script> -->
   </head>
+  <style>
+    #image {
+  display: block;
+  max-width: 100%;
+  }
+  </style>
   <body>
       <div id="camScan">
         <i id="close" class="fa fa-window-close-o fa-2x"></i>
@@ -29,6 +42,12 @@
             <i class="fa fa-file-text-o fa-3x" id="multi_file"></i>
             <i class="fa fa-camera fa-3x" id="cam-btn" aria-hidden="true"></i>
             </div>
+            <img id="singleImg" alt="">
+            <img id="tryout" alt="" height="300px">
+            <button id="myCrop">Crop & Edit</button>
+            <button id="extract_file">Extract</button>
+            <!-- <button id="greyscale" disabled>Apply greyscale</button>
+            <button id="no-greyscale" disabled>Remove greyscale</button> -->
         </div>
         <div class="output-container">
           <div class="inside-text">
@@ -46,10 +65,17 @@
          
        </div>
     </div>
-    <div id="blurrer"></div>
-    <script src="/ocr.js"></script>
+   
+    <div id="blurrer"></div> 
+    <div class="display">
+      <img id="image">
+      <button id="crop">Crop</button>
+      <button id="cancel">Cancel</button>
+    </div>
+    <!-- <script src="ocrCTRL.js"></script> -->
+    <script src="/ocr.js" type="module"></script>
+    <!-- <script src="https://unpkg.com/otsu-threshold@2.0.0/dist/otsu-threshold.min.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.2.2/dist/tesseract.min.js"></script> -->
-    <script>
-    </script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/jimp/browser/lib/jimp.min.js"></script>
+  </body>
 </html>

@@ -1,3 +1,8 @@
+// Loaded via <script> tag, create shortcut to access PDF.js exports.
+let pdfjsLib = window['pdfjs-dist/build/pdf'];
+
+// The workerSrc property shall be specified.
+pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
 
 function stopCamera() {
     // Get the video element
@@ -43,7 +48,10 @@ document.querySelector('#multi_file').addEventListener('click', ()=>{
   document.querySelector('#close').addEventListener('click', ()=>{
     document.querySelector('#camScan').style.display="none";
     document.querySelector('#blurrer').style.display="none";
-    stopCamera();
+    
+    if(document.querySelector('#video')){
+        stopCamera();
+    }
 })
   
 const cambtn = document.querySelector('#cam-btn');
@@ -63,8 +71,14 @@ const createScan = ()=>{
        const camscanDiv = document.getElementById('camScan');
        camscanDiv.appendChild(video);
 
+       const constraints = {
+        video: {
+          facingMode: "user"
+        }
+      };
+
        // Get the user's media stream
-       navigator.mediaDevices.getUserMedia({ video: true })
+       navigator.mediaDevices.getUserMedia(constraints)
       .then(stream => {
        // Set the video element's srcObject to the media stream
        video.srcObject = stream;
@@ -91,144 +105,233 @@ cambtn.addEventListener('click',async ()=>{
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         // Get data URL of canvas image
         const dataURL = canvas.toDataURL();
-        document.getElementById('camScan').removeChild(video);
+        document.querySelector('#singleImg').src = dataURL;
+        document.querySelector('#blurrer').style.display="none";
+        
+        // document.getElementById('loader').style.display = "block";
+        camScan.style.display="none";
         stopCamera();
+        document.getElementById('camScan').removeChild(video);
         // Perform OCR on image using Tesseract.js
-        Tesseract.recognize(dataURL, 'eng')
-                    .then(({ data: { text } }) => {
-                        console.log(text);
-                        // append the recognized text to the output element for each image
-                        document.getElementById('output').innerHTML = text;
-                        document.getElementById('loader').style.display = "none";
-                        canvas.style.display= "none";
-                        document.querySelector('#blurrer').style.display="none";
-                        stream.getTracks().forEach(track => track.stop());    
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        document.getElementById('loader').style.display = "none";
-                    });
+        // myCropper(dataURL);
+        const crop = document.querySelector('#myCrop');
+    crop.style.display = "block";
+    crop.addEventListener('click',()=>{
+        document.querySelector('#blurrer').style.display= "block";
+        const img = document.getElementById('image');
+        img.src = dataURL;
+        document.querySelector('.display').style.display = "block";
+        const cropper = new Cropper(img, {
+        aspectRatio: 1,
+        crop(event) {
+            // console.log(event.detail.x);
+            // console.log(event.detail.y);
+        },
+        });
+        const button = document.getElementById('crop');
+        button.addEventListener('click', async () => {
+            document.querySelector('#myCrop').style.display = "none";
+            document.querySelector('.display').style.display = "none";
+            document.querySelector('#blurrer').style.display= "none";
+            const canvas = cropper.getCroppedCanvas();
+            const imgData = canvas.toDataURL('image/jpeg');
+            let val = "image.jpg";
+            jaid(imgData, val);
+        });
+        document.querySelector('#cancel').addEventListener('click',()=>{
+            document.querySelector('.display').style.display = 'none';
+            document.querySelector('#blurrer').style.display = 'none';
+        })
+    })
+        // Tesseract.recognize(dataURL, 'eng')
+        //             .then(({ data: { text } }) => {
+        //                 console.log(text);
+        //                 // append the recognized text to the output element for each image
+        //                 document.getElementById('output').innerHTML = text;
+        //                 document.getElementById('loader').style.display = "none";
+        //                 canvas.style.display= "none";
+        //                 document.querySelector('#blurrer').style.display="none";
+        //                 if(document.querySelector('#video')){
+        //                     let stream =document.querySelector('#video').srcObject;
+        //                 stream.getTracks().forEach(track => track.stop()); 
+        //                 }   
+        //             })
+        //             .catch((error) => {
+        //                 console.error(error);
+        //                 document.getElementById('loader').style.display = "none";
+        //             });
       });
 
 })
 
 
+function jaid (imageUrl, val){
+    Jimp.read(imageUrl, (err, image) => {
+                if (err) throw err;
+                    image.quality(100) // set the quality to 60%
+                    // image.greyscale()
+                    // image.gaussian(1)
+                    // image.threshold({max:200})
+                    image.getBase64(Jimp.MIME_JPEG, (err, src) => { // get the base64-encoded image data
+                        if (err) throw err;
+                       let img = document.querySelector('#singleImg');
+                        img.src=src;
+                        Tesseract.recognize(img, 'eng')
+                        .then(({ data: { text } }) => {
+                         console.log(text);
+                           // append the recognized text to the output element for each image
+                            document.getElementById('output').innerHTML = text;
+                            document.getElementById('loader').style.display = "none";
+                         })
+                        .catch((error) => {
+                           console.error(error);
+                           document.getElementById('loader').style.display = "none";
+                         });
+                    });
+    //                 let myimage = document.querySelector('#singleImg').src;
+              });
+}
 
+async function myCrooperB(image){
+    const crop = document.querySelector('#myCrop');
+    crop.style.display = "block";
+    crop.addEventListener('click',()=>{
+        document.querySelector('#blurrer').style.display= "block";
+        const img = document.getElementById('image');
+        img.src = image;
+        document.querySelector('.display').style.display = "block";
+        const cropper = new Cropper(img, {
+        aspectRatio: 1,
+        crop(event) {
+            // console.log(event.detail.x);
+            // console.log(event.detail.y);
+        },
+        });
+        const button = document.getElementById('crop');
+        button.addEventListener('click', async () => {
+            let val = "image.jpg";
+            document.querySelector('#myCrop').style.display = "none";
+            document.querySelector('.display').style.display = "none";
+            document.querySelector('#blurrer').style.display= "none";
+            const canvas = cropper.getCroppedCanvas();
+            const imgData = canvas.toDataURL('image/jpeg');
+            jaid(imgData, val);
+        });
+        document.querySelector('#cancel').addEventListener('click',()=>{
+            document.querySelector('.display').style.display = 'none';
+            document.querySelector('#blurrer').style.display = 'none';
+        })
+    })
+}
+async function myCropper(image, val){
+    const crop = document.querySelector('#myCrop');
+    crop.style.display = "block";
+    crop.addEventListener('click',()=>{
+        document.querySelector('#blurrer').style.display= "block";
+        const img = document.getElementById('image');
+        img.src = image.src;
+        document.querySelector('.display').style.display = "block";
+        const cropper = new Cropper(img, {
+        aspectRatio: 1,
+        crop(event) {
+            // console.log(event.detail.x);
+            // console.log(event.detail.y);
+        },
+        });
+        const button = document.getElementById('crop');
+        button.addEventListener('click', async () => {
+            document.querySelector('#myCrop').style.display = "none";
+            document.querySelector('.display').style.display = "none";
+            document.querySelector('#blurrer').style.display= "none";
+            const canvas = cropper.getCroppedCanvas();
+            const imgData = canvas.toDataURL('image/jpeg');
+            jaid(imgData, val);
+        });
+        document.querySelector('#cancel').addEventListener('click',()=>{
+            document.querySelector('.display').style.display = 'none';
+            document.querySelector('#blurrer').style.display = 'none';
+        })
+    })
+}
 
-
-
-const camBtn = document.querySelector('#camButton');
-
-// add event listener to camBtn
-// camBtn.addEventListener('click', ()=>{
-//     // check if device has a camera
-//     if('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices){
-//         // prompt user to select a camera for use
-//         navigator.mediaDevices.getUserMedia({video:true})
-//         .then((stream)=>{
-//             // create a video lement to display stream
-//             const video = document.createElement('video');
-//             video.setAttribute('autoplay','');
-//             video.setAttribute('muted','');
-//             video.srcObject= stream;
-//             document.body.appendChild(video);
-
-//             // create a canvas to capture camera image
-//             const canvas = document.createElement('canvas');
-//             canvas.width = video.videoWidth;
-//             canvas.height = video.videoHeight;
-            
-
-//             // create button to capture image and stop camera feed
-//             const captureBtn = document.createElement('button');
-//             captureBtn.textContent = 'Capture';
-//             captureBtn.addEventListener('click', ()=>{
-//                 // draw the camera image onto the canvas
-//                 const context = canvas.getContext('2d');
-//                 context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-//                 // stop the feed
-//                 stream.getTracks().forEach(track => track.stop());
-
-//                 // remove the video and capture button elements
-//                 document.body.removeChild(video);
-//                 document.body.removeChild(captureBtn);
-
-//                 // get image data
-//                 // let img = new Image();
-//                 const img = canvas.toDataURL();
-//                 // const myImg = new Image();
-//                 // myImg.src = img;
-//                 // document.body.appendChild(myImg);
-//                 document.getElementById('loader').style.display = "block";
-//             });
-//             document.body.appendChild(captureBtn);
-//         })
-//         .catch((err)=> console.log('error assessing camera: ',err));
-//     } else{
-//         console.log('camera not available')
-//     }
-// });
 
 document.querySelector('#single-input').addEventListener('change',async (e)=>{
     const file = e.target.files[0];
             if (!file) return;
+            let imgElement = document.getElementById('singleImg');
+            imgElement.src = URL.createObjectURL(e.target.files[0]);
             const reader = new FileReader();
           reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    document.getElementById('loader').style.display = "block";
-                    Tesseract.recognize(img, 'eng')
-                        .then(({ data: { text } }) => {
-                            console.log(text);
-                            document.getElementById('output').innerHTML = text; // display the final recognized text in the div element
-                            document.getElementById('loader').style.display = "none";
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                            document.getElementById('loader').style.display = "none";
-                        });
+                    document.querySelector('#extract_file').style.display = "block";
+                    // document.getElementById('loader').style.display = "block";
+                 myCropper(img, file.name);
+                 document.querySelector('#extract_file').addEventListener('click',()=>{
+                    // extract_text(file, file.name);
+                    Tesseract.recognize(imgElement, 'eng')
+                    .then(({ data: { text } }) => {
+                       // append the recognized text to the output element for each image
+                        document.getElementById('output').innerHTML += text;
+                        document.getElementById('loader').style.display = "none";
+                     })
+                    .catch((error) => {
+                       console.error(error);
+                       document.getElementById('loader').style.display = "none";
+                     });
+                    document.querySelector('#extract_file').style.display = "none";
+                 })
                 }
                 img.src = e.target.result;
             }
             reader.readAsDataURL(file);
-})
+        })
+
+function extract_text(image, imgName) {
+    const data = new FormData();
+            data.append("image", image, imgName);
+            data.append("url", "https://openmediadata.s3.eu-west-3.amazonaws.com/pexels-monstera-5709059.jpg");
+            const options = {
+                method: 'POST',
+                headers: {
+                    'X-RapidAPI-Key': '',
+                    'X-RapidAPI-Host': 'ocr-wizard.p.rapidapi.com'
+                },
+                body: data
+            };
+            
+            fetch('https://ocr-wizard.p.rapidapi.com/ocr', options)
+                .then(response => response.json())
+                .then(response => {
+                    console.log(response);
+                    const text = response.body.fullText;
+                    document.getElementById('output').innerHTML = text; // display the final recognized text in the div element
+                    document.getElementById('loader').style.display = "none";
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('loader').style.display = "none";
+                });
+}
 
 document.getElementById('file-input').addEventListener('change', async function(e) {
     const files = e.target.files;
     if (!files) return;
+    console.log(files);
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = new Image();
-            img.onload = function() {
-                document.getElementById('loader').style.display = "block";
-                Tesseract.recognize(img, 'eng')
-                    .then(({ data: { text } }) => {
-                        console.log(text);
-                        // append the recognized text to the output element for each image
-                        document.getElementById('output').innerHTML += `<p>Image ${i+1}:</p><p>${text}</p>`;
-                        // display the image in a new div element before the extracted text
-                        const imageContainer = document.getElementById('image-container');
-                        const imageElement = document.createElement('img');
-                        imageElement.src = img.src;
-                        imageElement.style.width = "100px";
-                        imageContainer.appendChild(imageElement);
-                        document.getElementById('loader').style.display = "none";
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        document.getElementById('loader').style.display = "none";
-                    });
-            }
             if (file.type.includes('pdf')) {
                 // handle PDF file
                 const loadingTask = pdfjsLib.getDocument(e.target.result);
                 loadingTask.promise.then(function(pdf) {
-                    const maxPages = pdf.numPages;
+                    console.log(pdf._pdfInfo.numPages);
+                    const maxPages = pdf._pdfInfo.numPages;
                     for (let j = 1; j <= maxPages; j++) {
                         pdf.getPage(j).then(function(page) {
+                            console.log("at j", j);
                             const scale = 1.5;
                             const viewport = page.getViewport({ scale: scale });
                             const canvas = document.createElement('canvas');
@@ -242,10 +345,28 @@ document.getElementById('file-input').addEventListener('change', async function(
                             page.render(renderContext).promise.then(function() {
                                 const imgSrc = canvas.toDataURL();
                                 img.src = imgSrc;
-                            });
+                                const imageContainer = document.getElementById('image-container');
+                                       const imageElement = document.createElement('img');
+                                       imageElement.src = img.src;
+                                       imageElement.style.width = "100px";
+                                       imageContainer.appendChild(imageElement);
+                                       return imageElement
+                            }).then((img)=>{
+                          Tesseract.recognize(img, 'eng')
+                       .then(({ data: { text } }) => {
+                          // append the recognized text to the output element for each image
+                           document.getElementById('output').innerHTML += text;
+                           document.getElementById('loader').style.display = "none";
+                        })
+                       .catch((error) => {
+                          console.error(error);
+                          document.getElementById('loader').style.display = "none";
                         });
+                            })
+                        })
+                        
                     }
-                });
+                })
             } else {
                 reader.readAsDataURL(file);
             }
@@ -262,12 +383,9 @@ document.getElementById('summarize-btn').addEventListener('click',async ()=>{
                 prompt: prompt
             }
            await postData("/aibot", data);
-            // .then(()=>{
               const val =await returnData("/getdata");
               const vals = val.choices[0].text.trim();
-            //   vals.forEach(items => {
                 document.getElementById('response').innerHTML = vals;
-            //   });
         });
 
     

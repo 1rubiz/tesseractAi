@@ -11,6 +11,7 @@ body {
   line-height: 1.4;
 }
 
+
 #camScan {
   z-index: 3;
   display: none;
@@ -22,8 +23,10 @@ body {
 }
 
 #video {
+  max-height: 30%;
+  max-width: 90%;
   position: absolute;
-  top: 50%;
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -31,9 +34,9 @@ body {
 
 #capture {
   position: absolute;
-  bottom: 20px;
+  bottom: 57%;
   z-index: 2;
-  background-color: transparent;
+  /* background-color: transparent; */
   border: none;
   cursor: pointer;
   display: flex;
@@ -48,6 +51,30 @@ body {
 
 button:hover i {
   color: red;
+}
+
+#myCrop {
+  display: none;
+}
+
+.display {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+
+#extract_file {
+  display: none;
 }
 
 #file-input {
@@ -98,19 +125,22 @@ button:hover i {
   max-height: 500px;
 }
 
-#capture {
+/* #capture {
   position: absolute;
   bottom: 20px;
   z-index: 2;
-}
+} */
 
 #blurrer {
-  display: none;
   position: absolute;
-  min-width: 100%;
-  height: 50rem;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
   z-index: 1;
   background-color: #333;
+  box-sizing: border-box;
 }
 
 input[type="file"],
