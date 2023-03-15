@@ -192,37 +192,6 @@ function jaid (imageUrl, val){
               });
 }
 
-async function myCrooperB(image){
-    const crop = document.querySelector('#myCrop');
-    crop.style.display = "block";
-    crop.addEventListener('click',()=>{
-        document.querySelector('#blurrer').style.display= "block";
-        const img = document.getElementById('image');
-        img.src = image;
-        document.querySelector('.display').style.display = "block";
-        const cropper = new Cropper(img, {
-        aspectRatio: 1,
-        crop(event) {
-            // console.log(event.detail.x);
-            // console.log(event.detail.y);
-        },
-        });
-        const button = document.getElementById('crop');
-        button.addEventListener('click', async () => {
-            let val = "image.jpg";
-            document.querySelector('#myCrop').style.display = "none";
-            document.querySelector('.display').style.display = "none";
-            document.querySelector('#blurrer').style.display= "none";
-            const canvas = cropper.getCroppedCanvas();
-            const imgData = canvas.toDataURL('image/jpeg');
-            jaid(imgData, val);
-        });
-        document.querySelector('#cancel').addEventListener('click',()=>{
-            document.querySelector('.display').style.display = 'none';
-            document.querySelector('#blurrer').style.display = 'none';
-        })
-    })
-}
 async function myCropper(image, val){
     const crop = document.querySelector('#myCrop');
     crop.style.display = "block";
@@ -314,7 +283,7 @@ function extract_text(image, imgName) {
                 });
 }
 
-document.getElementById('file-input').addEventListener('change', async function(e) {
+document.getElementById('pdf-file-input').addEventListener('change', async function(e) {
     const files = e.target.files;
     if (!files) return;
     console.log(files);
