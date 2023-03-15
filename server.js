@@ -107,6 +107,7 @@ app.get('/getdata', async (req, res)=>{
                 'Authorization': `Bearer ${OPEN_API_KEY}`
             },
             body: JSON.stringify({
+
                 prompt: `${myData.prompt } ${inText} ${restructure} ${myData.text}`,
                 max_tokens: 1000,
                 temperature: 0.8,

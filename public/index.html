@@ -5,21 +5,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OCR-AI</title>
+    <base href="/">
     <link rel="stylesheet" href="index.css">
     <script src='https://unpkg.com/tesseract.js@4.0.1/dist/tesseract.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
-
+    <script src="https://kit.fontawesome.com/495342f380.js" crossorigin="anonymous"></script>
   </head>
   <body>
+      <div id="camScan">
+        <i id="close" class="fa fa-window-close-o fa-2x"></i>
+        <button id="capture">Capture Image</button>
+        <canvas id="canvas" width="640" height="480"></canvas>
+      </div>
     <div class="container">
         <div class="input-container">
-          <!-- <form id="imgForm" method="POST" action="/ocr" enctype="multipart/form-data"> -->
-            <h2 class="input-header">Upload image file(s)</h2>
-            <input type="file" accept="image/*" id="img-file-input" multiple>
-            <h2 class="input-header">Upload PDF file(s)</h2>
+            <h2 class="input-header">Upload an image or PDF file</h2>
             <input type="file" accept=".pdf" id="pdf-file-input" multiple>
-            <!-- <button id="extract" type="submit">Extract Text</button> -->
-          <!-- </form> -->
+            <input type="file" name="single-input" accept="image/*" id="single-input">
+            <input type="file" name="dummy" id="dummy" disabled>
+            <div id="fileType">
+              <p>Select a file input format...</p><br>
+            <i class="fa fa-file-image-o fa-3x" id="single"></i>
+            <i class="fa fa-file-text-o fa-3x" id="multi_file"></i>
+            <i class="fa fa-camera fa-3x" id="cam-btn" aria-hidden="true"></i>
+            </div>
+
         </div>
         <div class="output-container">
           <div class="inside-text">
@@ -37,8 +47,10 @@
          
        </div>
     </div>
-    <script src="/ocr.js">
-        
+    <div id="blurrer"></div>
+    <script src="/ocr.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.2.2/dist/tesseract.min.js"></script> -->
+    <script>
     </script>
 </body>
 </html>
