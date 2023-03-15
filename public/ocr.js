@@ -194,65 +194,82 @@ document.querySelector('#single-input').addEventListener('change',async (e)=>{
             reader.readAsDataURL(file);
 })
 
-document.getElementById('file-input').addEventListener('change', async function(e) {
-    const files = e.target.files;
-    if (!files) return;
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.onload = function() {
-                document.getElementById('loader').style.display = "block";
-                Tesseract.recognize(img, 'eng')
-                    .then(({ data: { text } }) => {
-                        console.log(text);
-                        // append the recognized text to the output element for each image
-                        document.getElementById('output').innerHTML += `<p>Image ${i+1}:</p><p>${text}</p>`;
-                        // display the image in a new div element before the extracted text
-                        const imageContainer = document.getElementById('image-container');
-                        const imageElement = document.createElement('img');
-                        imageElement.src = img.src;
-                        imageElement.style.width = "100px";
-                        imageContainer.appendChild(imageElement);
-                        document.getElementById('loader').style.display = "none";
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        document.getElementById('loader').style.display = "none";
-                    });
-            }
-            if (file.type.includes('pdf')) {
-                // handle PDF file
-                const loadingTask = pdfjsLib.getDocument(e.target.result);
-                loadingTask.promise.then(function(pdf) {
-                    const maxPages = pdf.numPages;
-                    for (let j = 1; j <= maxPages; j++) {
-                        pdf.getPage(j).then(function(page) {
-                            const scale = 1.5;
-                            const viewport = page.getViewport({ scale: scale });
-                            const canvas = document.createElement('canvas');
-                            const context = canvas.getContext('2d', {willReadFrequently: true});
-                            canvas.height = viewport.height;
-                            canvas.width = viewport.width;
-                            const renderContext = {
-                                canvasContext: context,
-                                viewport: viewport
-                            };
-                            page.render(renderContext).promise.then(function() {
-                                const imgSrc = canvas.toDataURL();
-                                img.src = imgSrc;
-                            });
-                        });
-                    }
-                });
-            } else {
-                reader.readAsDataURL(file);
-            }
-        };
-        reader.readAsDataURL(file);
-    }
-});
+let imageContainer = document.querySelector('#image-container');
+const pdfFileInput = document.querySelector('#pdf-file-input');
+const imgFileInput = document.querySelector('#single-input');
+let outputTextArea = document.querySelector('#output');
+const loader = document.querySelector('#loader');
+
+// Helper function to display loader
+function showLoader() {
+  loader.style.display = 'block';
+}
+
+// Helper function to hide loader
+function hideLoader() {
+  loader.style.display = 'none';
+}
+
+// Function to extract text from image using Tesseract.js
+async function extractImageText(imageUrl) {
+  showLoader();
+  console.log(`Extracting text from image: ${imageUrl}`);
+  const { data: { text } } = await Tesseract.recognize(imageUrl);
+  console.log(`Extracted text from image: ${text}`);
+  hideLoader();
+  return text;
+}
+
+// Function to extract text from PDF using pdf.js
+async function extractPdfText(pdfUrl) {
+  showLoader();
+  console.log(`Extracting text from PDF: ${pdfUrl}`);
+  const pdfDoc = await pdfjsLib.getDocument({ url: pdfUrl }).promise;
+  const maxPages = pdfDoc.numPages;
+  let pageText = '';
+  for (let pageNum = 1; pageNum <= maxPages; pageNum++) {
+    const pdfPage = await pdfDoc.getPage(pageNum);
+    const pageContent = await pdfPage.getTextContent();
+    const pageTextArr = pageContent.items.map(item => item.str);
+    const pageTextStr = pageTextArr.join(' ');
+    pageText += ` ${pageTextStr}`;
+  }
+  console.log(`Extracted text from PDF: ${pageText}`);
+  hideLoader();
+  return pageText;
+}
+
+// Function to handle image file input change
+async function handleImageFileInputChange(event) {
+  const files = event.target.files;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const imageUrl = URL.createObjectURL(file);
+    const extractedText = await extractImageText(imageUrl);
+    outputTextArea.value += `${extractedText}\n\n`;
+  }
+}
+
+// Function to handle PDF file input change
+async function handlePdfFileInputChange(event) {
+  const files = event.target.files;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const pdfUrl = URL.createObjectURL(file);
+    const extractedText = await extractPdfText(pdfUrl);
+    outputTextArea.value += `${extractedText}\n\n`;
+  }
+}
+
+// Attach event listener to image file input
+//imgFileInput.addEventListener('change', handleImageFileInputChange);
+
+// Attach event listener to PDF file input
+pdfFileInput.addEventListener('change', handlePdfFileInputChange);
+
+  
+  
+
 
 document.getElementById('summarize-btn').addEventListener('click',async ()=>{
             const text = document.getElementById('output').value
