@@ -25,7 +25,7 @@ function stopCamera() {
   document.querySelector('#single').addEventListener('click', ()=>{
     document.querySelector("#dummy").style.display="none";
     document.querySelector("#single-input").style.display="block";
-    document.querySelector("#file-input").style.display="none";
+    document.querySelector("#pdf-file-input").style.display="none";
     document.querySelector('#single').style.color="green";
     document.querySelector('#multi_file').style.color="black";
 })
@@ -33,7 +33,7 @@ function stopCamera() {
 document.querySelector('#multi_file').addEventListener('click', ()=>{
     document.querySelector("#dummy").style.display="none";
     document.querySelector("#single-input").style.display="none";
-    document.querySelector("#file-input").style.display="block";
+    document.querySelector("#pdf-file-input").style.display="block";
     document.querySelector('#multi_file').style.color="green";
     document.querySelector('#single').style.color="black";
 })

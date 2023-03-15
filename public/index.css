@@ -77,7 +77,7 @@ button:hover i {
   display: none;
 }
 
-#file-input {
+#pdf-file-input {
   display: none;
 }
 
@@ -188,9 +188,9 @@ button {
     font-size: 0.8rem;
   }
 
-  #fileType {
+  /* #fileType {
       flex-wrap: wrap;
-    }
+    } */
     
   #fileType i {
       flex-basis: 100%;
