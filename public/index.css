@@ -195,7 +195,7 @@ button {
   #fileType i {
       flex-basis: 100%;
     }
-
+  
   input[type="file"] {
     padding: 10px;
     margin: 10px;

@@ -33,8 +33,9 @@
     <div class="container">
         <div class="input-container">
             <h2 class="input-header">Upload an image or PDF file</h2>
-            <input type="file" accept=".pdf, image/*" id="pdf-file-input" multiple>
-            <input type="file" name="single-input" id="single-input">
+
+            <input type="file" accept=".pdf" id="pdf-file-input" multiple>
+            <input type="file" name="single-input" accept="image/*" id="single-input">
             <input type="file" name="dummy" id="dummy" disabled>
             <div id="fileType">
               <p>Select a file input format...</p><br>
@@ -42,12 +43,14 @@
             <i class="fa fa-file-text-o fa-3x" id="multi_file"></i>
             <i class="fa fa-camera fa-3x" id="cam-btn" aria-hidden="true"></i>
             </div>
+
             <img id="singleImg" alt="">
             <img id="tryout" alt="" height="300px">
             <button id="myCrop">Crop & Edit</button>
             <button id="extract_file">Extract</button>
             <!-- <button id="greyscale" disabled>Apply greyscale</button>
             <button id="no-greyscale" disabled>Remove greyscale</button> -->
+
         </div>
         <div class="output-container">
           <div class="inside-text">

@@ -256,33 +256,6 @@ document.querySelector('#single-input').addEventListener('change',async (e)=>{
             reader.readAsDataURL(file);
         })
 
-function extract_text(image, imgName) {
-    const data = new FormData();
-            data.append("image", image, imgName);
-            data.append("url", "https://openmediadata.s3.eu-west-3.amazonaws.com/pexels-monstera-5709059.jpg");
-            const options = {
-                method: 'POST',
-                headers: {
-                    'X-RapidAPI-Key': '',
-                    'X-RapidAPI-Host': 'ocr-wizard.p.rapidapi.com'
-                },
-                body: data
-            };
-            
-            fetch('https://ocr-wizard.p.rapidapi.com/ocr', options)
-                .then(response => response.json())
-                .then(response => {
-                    console.log(response);
-                    const text = response.body.fullText;
-                    document.getElementById('output').innerHTML = text; // display the final recognized text in the div element
-                    document.getElementById('loader').style.display = "none";
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById('loader').style.display = "none";
-                });
-}
-
 document.getElementById('pdf-file-input').addEventListener('change', async function(e) {
     const files = e.target.files;
     if (!files) return;
@@ -343,6 +316,80 @@ document.getElementById('pdf-file-input').addEventListener('change', async funct
         reader.readAsDataURL(file);
     }
 });
+
+// let imageContainer = document.querySelector('#image-container');
+// const pdfFileInput = document.querySelector('#pdf-file-input');
+// const imgFileInput = document.querySelector('#single-input');
+// let outputTextArea = document.querySelector('#output');
+// const loader = document.querySelector('#loader');
+
+// // Helper function to display loader
+// function showLoader() {
+//   loader.style.display = 'block';
+// }
+
+// // Helper function to hide loader
+// function hideLoader() {
+//   loader.style.display = 'none';
+// }
+
+// // Function to extract text from image using Tesseract.js
+// async function extractImageText(imageUrl) {
+//   showLoader();
+//   console.log(`Extracting text from image: ${imageUrl}`);
+//   const { data: { text } } = await Tesseract.recognize(imageUrl);
+//   console.log(`Extracted text from image: ${text}`);
+//   hideLoader();
+//   return text;
+// }
+
+// // Function to extract text from PDF using pdf.js
+// async function extractPdfText(pdfUrl) {
+//   showLoader();
+//   console.log(`Extracting text from PDF: ${pdfUrl}`);
+//   const pdfDoc = await pdfjsLib.getDocument({ url: pdfUrl }).promise;
+//   const maxPages = pdfDoc.numPages;
+//   let pageText = '';
+//   for (let pageNum = 1; pageNum <= maxPages; pageNum++) {
+//     const pdfPage = await pdfDoc.getPage(pageNum);
+//     const pageContent = await pdfPage.getTextContent();
+//     const pageTextArr = pageContent.items.map(item => item.str);
+//     const pageTextStr = pageTextArr.join(' ');
+//     pageText += ` ${pageTextStr}`;
+//   }
+//   console.log(`Extracted text from PDF: ${pageText}`);
+//   hideLoader();
+//   return pageText;
+// }
+
+// // Function to handle image file input change
+// async function handleImageFileInputChange(event) {
+//   const files = event.target.files;
+//   for (let i = 0; i < files.length; i++) {
+//     const file = files[i];
+//     const imageUrl = URL.createObjectURL(file);
+//     const extractedText = await extractImageText(imageUrl);
+//     outputTextArea.value += `${extractedText}\n\n`;
+//   }
+// }
+
+// // Function to handle PDF file input change
+// async function handlePdfFileInputChange(event) {
+//   const files = event.target.files;
+//   for (let i = 0; i < files.length; i++) {
+//     const file = files[i];
+//     const pdfUrl = URL.createObjectURL(file);
+//     const extractedText = await extractPdfText(pdfUrl);
+//     outputTextArea.value += `${extractedText}\n\n`;
+//   }
+// }
+
+// Attach event listener to image file input
+//imgFileInput.addEventListener('change', handleImageFileInputChange);
+
+// Attach event listener to PDF file input
+// pdfFileInput.addEventListener('change', handlePdfFileInputChange);
+
 
 document.getElementById('summarize-btn').addEventListener('click',async ()=>{
             const text = document.getElementById('output').value

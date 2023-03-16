@@ -8,9 +8,10 @@ const morgan = require('morgan')
 const dotenv = require('dotenv');
 // const {OpenAIApi, Configuration} = require('openai');
 const fetch = require('node-fetch')
-// import fetch from 'node-fetch';
-const multer = require('multer');
 
+dotenv.config();
+
+const OPEN_API_KEY = process.env.OPENAI_API_KEY;
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -21,7 +22,7 @@ app.use(fileUpload());
 app.use(cors());
 app.use(morgan('dev'))
 
-dotenv.config();
+
 
 app.listen(7000, async ()=>{
     console.log("Listening.....")
@@ -29,8 +30,9 @@ app.listen(7000, async ()=>{
 
 const OPEN_API_KEY = process.env.OPENAI_API_KEY2;
 
+const inText = "in this document"
+const restructure = "and restructure"
 let myData = {}
-
 app.get('/', (req, res)=>{
     // res.sendFile(path.join(__dirname+'/public/index.html'))
     res.sendFile('index.html')
@@ -55,7 +57,6 @@ app.post('/aibot', async (req, res)=>{
     
     // res.sendStatus(200);
 })
-
 app.get('/getdata', async (req, res)=>{
     try{
         //  const data = await generateResponse(req.body.prompt, req.body.text);
@@ -100,9 +101,6 @@ app.get('/getdata', async (req, res)=>{
                         }, '');
                         data.choices[0].text = orderedListFormatted;
                       }
-                      
-                    
-                    // console.log(data);
                     res.send(data);
                 }
             })
@@ -112,9 +110,10 @@ app.get('/getdata', async (req, res)=>{
     }
 });
 
-const upload = multer({ dest: 'uploads/' });
 
-app.post('/api/ocr', upload.single('image-file'), async (req, res) => {
+// const upload = multer({ dest: 'uploads/' });
+
+// app.post('/api/ocr', upload.single('image-file'), async (req, res) => {
     // const data = new FormData();
     // data.append("file", e.target.files[0], e.target.files[0].name);
     
@@ -133,14 +132,14 @@ app.post('/api/ocr', upload.single('image-file'), async (req, res) => {
     //     .catch(err => console.error(err));
 
 
-          try {
-    const { path } = req.file;
-    console.log(path);
+//           try {
+//     const { path } = req.file;
+//     console.log(path);
 //     const result = await Tesseract.recognize(path, 'eng', { logger: m => console.log(m) });
     // res.send(result.data);
-    res.sendStatus(200);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(error.message);
-  }
-});
+//     res.sendStatus(200);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send(error.message);
+//   }
+// });
