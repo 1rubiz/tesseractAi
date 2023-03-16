@@ -71,14 +71,14 @@ const createScan = ()=>{
        const camscanDiv = document.getElementById('camScan');
        camscanDiv.appendChild(video);
 
-       const constraints = {
-        video: {
-          facingMode: "user"
-        }
-      };
+       //const constraints = {
+        //video: {
+          //facingMode: "user"
+        //}
+      //};
 
        // Get the user's media stream
-       navigator.mediaDevices.getUserMedia(constraints)
+       navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } })
       .then(stream => {
        // Set the video element's srcObject to the media stream
        video.srcObject = stream;
