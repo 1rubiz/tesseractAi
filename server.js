@@ -11,7 +11,7 @@ const fetch = require('node-fetch')
 
 dotenv.config();
 
-const OPEN_API_KEY = process.env.OPENAI_API_KEY;
+// const OPEN_API_KEY = process.env.OPENAI_API_KEY;
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
