@@ -1,6 +1,6 @@
 // const Tesseract = require('tesseract.js')
 const express = require('express');
-const path = require('path')
+// const path = require('path')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
@@ -8,7 +8,6 @@ const morgan = require('morgan')
 const dotenv = require('dotenv');
 // const {OpenAIApi, Configuration} = require('openai');
 const fetch = require('node-fetch')
-// import fetch from 'node-fetch';
 
 dotenv.config();
 
@@ -28,49 +27,12 @@ app.use(morgan('dev'))
 app.listen(7000, async ()=>{
     console.log("Listening.....")
 })
+
+const OPEN_API_KEY = process.env.OPENAI_API_KEY2;
+
 const inText = "in this document"
 const restructure = "and restructure"
 let myData = {}
-function generateResponse(prompt, text) {
-    // Set up the API endpoint URL and options
-    // const authorize = "Bearer "+key;
-    const url = 'https://api.openai.com/v1/completions';
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer '+process.env.OPENAI_API_KEY
-        },
-        body: JSON.stringify({
-            prompt: `${prompt} ${text}`,
-            max_tokens: 150,
-            temperature: 0.5,
-            top_p: 0.7,
-            n: 1,
-            // frequency_penalty: 0.5,
-            // presence_penalty: 1,
-            model: 'text-davinci-002',
-        })
-    };
-     // Make the API request
-     fetch(url, options)
-     .then(response => response.json())
-     .then(data => {
-         // Get the response text from the API response
-        //  const responseText = data.choices[0].text.trim();
-        //  console.log(data.choices[0].text);
-        if(data){
-//          console.log(data);
-        //  res.send(data)
-        myData=data;
-         return(data);
-        }
-        //  console.log(myData)
-         // Display the response in the UI
-     })
-     .catch(error => console.error(error));
-}
-// loki(screen.png)
 app.get('/', (req, res)=>{
     // res.sendFile(path.join(__dirname+'/public/index.html'))
     res.sendFile('index.html')
@@ -139,9 +101,6 @@ app.get('/getdata', async (req, res)=>{
                         }, '');
                         data.choices[0].text = orderedListFormatted;
                       }
-                      
-                    
-                    console.log(data);
                     res.send(data);
                 }
             })
@@ -150,3 +109,37 @@ app.get('/getdata', async (req, res)=>{
         console.log(err)
     }
 });
+
+
+// const upload = multer({ dest: 'uploads/' });
+
+// app.post('/api/ocr', upload.single('image-file'), async (req, res) => {
+    // const data = new FormData();
+    // data.append("file", e.target.files[0], e.target.files[0].name);
+    
+    // const options = {
+    //     method: 'POST',
+    //     headers: {
+    //         'X-RapidAPI-Key': '3f6ee1d352mshee38e7172feff63p1b6256jsn10d4452c3b45',
+    //         'X-RapidAPI-Host': 'docwire-doctotext.p.rapidapi.com'
+    //     },
+    //     body: data
+    // };
+    
+    // fetch('https://docwire-doctotext.p.rapidapi.com/extract_text', options)
+    //     .then(response => response.json())
+    //     .then(response => console.log(response))
+    //     .catch(err => console.error(err));
+
+
+//           try {
+//     const { path } = req.file;
+//     console.log(path);
+//     const result = await Tesseract.recognize(path, 'eng', { logger: m => console.log(m) });
+    // res.send(result.data);
+//     res.sendStatus(200);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send(error.message);
+//   }
+// });
