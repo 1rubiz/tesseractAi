@@ -269,11 +269,14 @@ document.getElementById('pdf-file-input').addEventListener('change', async funct
                 // handle PDF file
                 const loadingTask = pdfjsLib.getDocument(e.target.result);
                 loadingTask.promise.then(function(pdf) {
-                    console.log(pdf._pdfInfo.numPages);
+//                     console.log(pdf._pdfInfo.numPages);
                     const maxPages = pdf._pdfInfo.numPages;
                     for (let j = 1; j <= maxPages; j++) {
                         pdf.getPage(j).then(function(page) {
-                            console.log("at j", j);
+//                             console.log("at j", j);
+                            if (j === 5){
+                                return;
+                            }
                             const scale = 1.5;
                             const viewport = page.getViewport({ scale: scale });
                             const canvas = document.createElement('canvas');
