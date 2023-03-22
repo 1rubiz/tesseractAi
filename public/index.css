@@ -11,6 +11,12 @@ body {
   line-height: 1.4;
 }
 
+#err-color {
+  min-width: 100%;
+  min-height: 20px;
+  display: none;
+  background-color: red;
+}
 
 #camScan {
   z-index: 3;
