@@ -1,12 +1,9 @@
-// const Tesseract = require('tesseract.js')
 const express = require('express');
-// const path = require('path')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const morgan = require('morgan')
 const dotenv = require('dotenv');
-// const {OpenAIApi, Configuration} = require('openai');
 const fetch = require('node-fetch')
 
 dotenv.config();
@@ -33,33 +30,21 @@ const OPEN_API_KEY = process.env.OPENAI_API_KEY2;
 const inText = "in this document"
 const restructure = "and restructure"
 let myData = {}
+
+// home route setup
 app.get('/', (req, res)=>{
-    // res.sendFile(path.join(__dirname+'/public/index.html'))
     res.sendFile('index.html')
 })
 
-app.get('/summonkeys',async (req, res)=>{
-    const api = process.env.OPENAI_API_KEY;
-    const tresures = {
-        success: true,
-        api : api
-    }
-    const strApi = JSON.stringify(tresures);
-    res.send(strApi);
-})
-
+// post request from the user
 app.post('/aibot', async (req, res)=>{
     myData.text = req.body.text;
     myData.prompt= req.body.prompt;
     res.send(myData);
-    // const text = await req.body;
-    // aiBot(req.body.text);
-    
-    // res.sendStatus(200);
 })
+// asunchronous get request to retrieve data back to the user
 app.get('/getdata', async (req, res)=>{
     try{
-        //  const data = await generateResponse(req.body.prompt, req.body.text);
         const url = 'https://api.openai.com/v1/completions';
         const options = {
             method: 'POST',
@@ -82,7 +67,7 @@ app.get('/getdata', async (req, res)=>{
             })
         };
         
-        // Make the API request
+        // Make the API request to Open Ai (gpt-3)
         fetch(url, options)
             .then(response => response.json())
             .then(data => {
@@ -109,37 +94,3 @@ app.get('/getdata', async (req, res)=>{
         console.log(err)
     }
 });
-
-
-// const upload = multer({ dest: 'uploads/' });
-
-// app.post('/api/ocr', upload.single('image-file'), async (req, res) => {
-    // const data = new FormData();
-    // data.append("file", e.target.files[0], e.target.files[0].name);
-    
-    // const options = {
-    //     method: 'POST',
-    //     headers: {
-    //         'X-RapidAPI-Key': '3f6ee1d352mshee38e7172feff63p1b6256jsn10d4452c3b45',
-    //         'X-RapidAPI-Host': 'docwire-doctotext.p.rapidapi.com'
-    //     },
-    //     body: data
-    // };
-    
-    // fetch('https://docwire-doctotext.p.rapidapi.com/extract_text', options)
-    //     .then(response => response.json())
-    //     .then(response => console.log(response))
-    //     .catch(err => console.error(err));
-
-
-//           try {
-//     const { path } = req.file;
-//     console.log(path);
-//     const result = await Tesseract.recognize(path, 'eng', { logger: m => console.log(m) });
-    // res.send(result.data);
-//     res.sendStatus(200);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send(error.message);
-//   }
-// });

@@ -1,3 +1,5 @@
+{/* <script src="https://cdn.jsdelivr.net/npm/jimp/browser/lib/jimp.min.js"></script> */}
+
 // Loaded via <script> tag, create shortcut to access PDF.js exports.
 let pdfjsLib = window['pdfjs-dist/build/pdf'];
 
